@@ -57,30 +57,27 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 		if (!enabled) return;
 
 		const arrowShapes: TLArrowShape[] = [];
-		const nonArrowShapes: TLShape[] = [];
-		const geoShapeGeometry: Geometry2d[] = [];
+		const nodeShapes: TLShape[] = [];
+		const colaNodes: GraphNode[] = [];
+		const colaLinks: GraphEdgeIndexPair[] = [];
+		const constrainVertical: Set<number> = new Set();
 
 		// Sort shapes into arrows and geo shapes
 		for (const shape of editor.getSelectedShapes()) {
 			if (shape.type === "arrow") {
 				arrowShapes.push(shape as TLArrowShape);
 			} else {
-				nonArrowShapes.push(shape);
-				geoShapeGeometry.push(editor.getShapeGeometry(shape));
+				nodeShapes.push(shape);
 			}
 		}
+
 		// Deselect so that shapes can move when first enabling graph layout.
 		// We freeze positions of selected shapes in the layout loop.
 		editor.selectNone();
 
-		// Setup data we will need before and after layout
-		const graphNodes: GraphNode[] = [];
-		const graphLinks: GraphEdgeIndexPair[] = [];
-		const constrainVertical: Set<number> = new Set();
-
-		// Create graph nodes and links
-		nonArrowShapes.forEach((s, i) => {
-			const geo = geoShapeGeometry[i];
+		// Create graph nodes
+		nodeShapes.forEach((s, i) => {
+			const geo = editor.getShapeGeometry(s);
 			const graphNode = {
 				// index, x, y, width, height are used by cola.js
 				index: i,
@@ -93,15 +90,14 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 				fixed: "color" in s.props && s.props.color === "red" ? 1 : 0,
 				color: "color" in s.props ? s.props.color : "black",
 			};
-			graphNodes.push(graphNode);
+			colaNodes.push(graphNode);
 		});
 
 		// Create lookup so we can get node indexes in O(1) time
 		const nodeIndexMap = new Map(
-			graphNodes.map((node, index) => [node.id, index]),
+			colaNodes.map((node, index) => [node.id, index]),
 		);
 		arrowShapes.forEach((s) => {
-			// TODO: Handle unbound arrows
 			const arrow = s as TLArrowShape & BoundArrow;
 			const startIndex = nodeIndexMap.get(
 				arrow.props.start.boundShapeId as TLShapeId,
@@ -120,7 +116,7 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 				return;
 			}
 			const graphLink = { source: startIndex, target: endIndex };
-			graphLinks.push(graphLink);
+			colaLinks.push(graphLink);
 		});
 
 		// Setup constraints
@@ -140,8 +136,8 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 
 		// Create layout
 		const layout = new Layout()
-			.nodes(graphNodes)
-			.links(graphLinks)
+			.nodes(colaNodes)
+			.links(colaLinks)
 			.avoidOverlaps(true)
 			.linkDistance((link) => calculateLinkDistance(link as ColaLink))
 			.handleDisconnected(true)
