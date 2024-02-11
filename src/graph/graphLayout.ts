@@ -58,7 +58,7 @@ const createGraphFromSelection = (editor: Editor) => {
 	const constrainVertical: Set<number> = new Set();
 	const colaNodes: GraphNode[] = [];
 	const colaLinks: GraphEdgeIndexPair[] = [];
-	const indexLookup = new Map();
+	const indexLookup = new Map<TLShapeId, number>();
 
 	// Sort shapes into arrows and geo shapes
 	for (const shape of editor.getSelectedShapes()) {
@@ -88,8 +88,7 @@ const createGraphFromSelection = (editor: Editor) => {
 		indexLookup.set(s.id, i);
 	});
 
-	arrowShapes.forEach((s) => {
-		const arrow = s as TLArrowShape & BoundArrow;
+	for (const arrow of arrowShapes as (TLArrowShape & BoundArrow)[]) {
 		const startIndex = indexLookup.get(
 			arrow.props.start.boundShapeId as TLShapeId,
 		);
@@ -107,9 +106,8 @@ const createGraphFromSelection = (editor: Editor) => {
 			constrainVertical.add(endIndex);
 			return;
 		}
-		const graphLink = { source: startIndex, target: endIndex };
-		colaLinks.push(graphLink);
-	});
+		colaLinks.push({ source: startIndex, target: endIndex });
+	};
 
 	// Setup constraints
 	const constraints =
