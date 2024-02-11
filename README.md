@@ -1,17 +1,39 @@
-This repository shows how you might use [tldraw](https://github.com/tldraw/tldraw) together with the [yjs](https://yjs.dev) library. It also makes a good example for how to use tldraw with other backend services!
+# tldraw graph layout
+This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/), a JS port of [libcola](http://www.adaptagrams.org), a research project from [Time Dwyer](https://ialab.it.monash.edu/~dwyer/) and others.
 
-This branch shows a partykit integration.
 
-For production:
-
-- First create a `.env` file with:
-
+## Setup
+```bash
+yarn install
+yarn dev
 ```
-VITE_PRODUCTION_URL=https://tldraw-partykit-yjs-example.YOUR_USERNAME.partykit.dev
+Then go to `http://localhost:5173` in your browser.
+
+Multiplayer is supported* using yjs and partykit. To deploy:
+```bash
+yarn deploy
 ```
 
-...replacing `YOUR_USERNAME` with your partykit username.
+*Note that this is a _terrible_ way to do multiplayer and there is no handling for multiple clients with overlapping graph layout sims. It's essentially the same as a single client manually moving many shapes each frame, but it sure is fun! If you find it's stalling on "Connecting..." you can disable multipayer by commenting out line 22 in App.tsx (store={store}). PRs for multiplayer fixes are **very** welcome!
 
-- Then run `yarn deploy`
+## Usage
+1. Select shapes you wish to include in the physics simulation
+2. Click the "Graph" button (or hit "G")
+3. Move shapes around and watch it go brrrrrrrrrr
+4. Click "Graph" again to stop the simulation
 
-If it's your first time using partykit, you may need to try deploying first in order to get your username. While the instructions above should work, the real way to do this is to point the `VITE_PRODUCTION_URL` at whatever URL you're deploying the website to.
+### Rules
+1. Any shapes connected with arrows are included in the graph layout (this extends to videos, frames, and all other shapes)
+2. When you select a shape, it will be "fixed" so you can move it around. Deselect to unfreeze.
+3. Making a shape red will fix it in place
+
+# Contributing
+Please open an issue or PR if you have any suggestions or improvements! Especially looking for:
+- Refactoring (it's a rushed job, sorry!)
+- Performance improvements & bug fixes
+- More interesting constraint demonstrations
+
+## Current Limitations
+- No support for multiple graph layouts at once
+- Rotation is not considered in the layout (PRs welcome!)
+- Performance is much poorer than it needs to be, we're currently restarting the layout sim every frame (I know, I know...) and PRs to fix this or otherwise speed things up are very welcome!
