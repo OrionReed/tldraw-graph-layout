@@ -1,6 +1,5 @@
 # tldraw graph layout
-This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/), a JS port of [libcola](http://www.adaptagrams.org), a research project from [Time Dwyer](https://ialab.it.monash.edu/~dwyer/) and others.
-
+This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/) (A JS port of [libcola](http://www.adaptagrams.org) from [Time Dwyer](https://ialab.it.monash.edu/~dwyer/) and others)
 
 ## Setup
 ```bash
@@ -22,7 +21,7 @@ yarn deploy
 3. Move shapes around and watch it go brrrrrrrrrr
 4. Click "Graph" again to stop the simulation
 
-### Rules
+### Behaviour
 1. Any shapes connected with arrows are included in the graph layout (this extends to videos, frames, and all other shapes)
 2. When you select a shape, it will be "fixed" so you can move it around. Deselect to unfreeze.
 3. Making a shape red will fix it in place
