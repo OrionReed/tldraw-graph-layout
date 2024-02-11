@@ -37,3 +37,4 @@ Please open an issue or PR if you have any suggestions or improvements! Especial
 - No support for multiple graph layouts at once
 - Rotation is not considered in the layout (PRs welcome!)
 - Performance is much poorer than it needs to be, we're currently restarting the layout sim every frame (I know, I know...) and PRs to fix this or otherwise speed things up are very welcome!
+- Due to the current edge length calculation, it's possible for the graph to never reach a stable / zero energy state

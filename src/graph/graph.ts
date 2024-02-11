@@ -125,12 +125,12 @@ export const step = (editor: Editor, layout: Layout) => {
       editor.updateShape({
         id: node.id,
         type: "geo",
-        x: node.x - node.width / 2,
-        y: node.y - node.height / 2,
+        x: node.x - geo.center.x,
+        y: node.y - geo.center.y,
       });
     }
     else {
-      editor.animateShape({ id: node.id, type: 'geo', x: node.x - node.width / 2, y: node.y - node.height / 2 }, { duration: 50, easing: (t) => t * t });
+      editor.animateShape({ id: node.id, type: 'geo', x: node.x - geo.center.x, y: node.y - geo.center.y }, { duration: 20, easing: (t) => t * t });
     }
   }
 };
