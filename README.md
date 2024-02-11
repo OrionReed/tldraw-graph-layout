@@ -1,6 +1,8 @@
 # tldraw graph layout
 This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/) (A JS port of [libcola](http://www.adaptagrams.org) from [Time Dwyer](https://ialab.it.monash.edu/~dwyer/) and others)
 
+https://github.com/OrionReed/tldraw-graph-layout/assets/16704290/f6d91953-d318-4af0-aa4b-92fce922e717
+
 ## Setup
 ```bash
 yarn install
