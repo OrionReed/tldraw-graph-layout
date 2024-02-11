@@ -1,0 +1,61 @@
+.custom-layout {
+  position: absolute;
+  inset: 0px;
+  z-index: 300;
+  pointer-events: none;
+}
+
+.custom-toolbar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  gap: 8px;
+}
+
+.custom-button {
+  pointer-events: all;
+  padding: 4px 12px;
+  background: white;
+  border: 1px solid black;
+  border-radius: 64px;
+  &:hover {
+    background-color: rgb(240, 240, 240);
+  }
+}
+
+.custom-button[data-isactive="true"] {
+  background-color: black;
+  color: white;
+}
+
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active,
+.collapsible:hover {
+  background-color: #ccc;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}

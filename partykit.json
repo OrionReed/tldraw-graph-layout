@@ -1,0 +1,8 @@
+{
+  "name": "canvas",
+  "main": "src/server.ts",
+  "serve": {
+    "path": "dist"
+  },
+  "compatibilityDate": "2023-10-04"
+}
