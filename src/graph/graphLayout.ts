@@ -25,7 +25,7 @@ type ColaLink = {
 	target: { x: number; y: number; width: number; height: number; };
 }
 
-function calculateLinkDistance(link: ColaLink) {
+const calculateLinkDistance = (link: ColaLink) => {
 	// Calculate horizontal and vertical distances between centers
 	const dx = Math.abs(link.target.x - link.source.x);
 	const dy = Math.abs(link.target.y - link.source.y);
@@ -55,13 +55,13 @@ function calculateLinkDistance(link: ColaLink) {
 export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 	useEffect(() => {
 		if (!enabled) return;
-		const selection = editor.getSelectedShapes();
+
 		const arrowShapes: TLArrowShape[] = [];
 		const nonArrowShapes: TLShape[] = [];
 		const geoShapeGeometry: Geometry2d[] = [];
 
 		// Sort shapes into arrows and geo shapes
-		for (const shape of selection) {
+		for (const shape of editor.getSelectedShapes()) {
 			if (shape.type === "arrow") {
 				arrowShapes.push(shape as TLArrowShape);
 			} else {
