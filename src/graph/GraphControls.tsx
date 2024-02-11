@@ -1,7 +1,7 @@
 import { track, useEditor } from "@tldraw/tldraw";
 import { useEffect, useState } from "react";
 import "../css/dev-ui.css";
-import { useGraphLayout } from "./graphLayout.js";
+import { useGraphLayout } from "./useGraphLayout.js";
 
 export const DevUi = track(() => {
 	const editor = useEditor();
