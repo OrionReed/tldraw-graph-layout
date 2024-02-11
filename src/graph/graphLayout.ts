@@ -55,55 +55,32 @@ function calculateLinkDistance(link: ColaLink) {
 export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 	useEffect(() => {
 		if (!enabled) return;
-
-		const nodeShapes: TLShape[] = [];
-		const nodeShapeGeometry: Geometry2d[] = [];
-
-		// Setup data we will need before and after layout
-		const graphNodes: GraphNode[] = [];
-		const graphLinks: GraphEdgeIndexPair[] = [];
-		const constrainVertical: Set<number> = new Set();
-
-		// Create lookup so we can get node indexes in O(1) time
-		const nodeIndexMap = new Map(
-			graphNodes.map((node, index) => [node.id, index]),
-		);
+		const selection = editor.getSelectedShapes();
+		const arrowShapes: TLArrowShape[] = [];
+		const nonArrowShapes: TLShape[] = [];
+		const geoShapeGeometry: Geometry2d[] = [];
 
 		// Sort shapes into arrows and geo shapes
-		for (const shape of editor.getSelectedShapes()) {
+		for (const shape of selection) {
 			if (shape.type === "arrow") {
-				// TODO: Handle unbound arrows
-				const arrow = shape as TLArrowShape & BoundArrow;
-				const startIndex = nodeIndexMap.get(
-					arrow.props.start.boundShapeId as TLShapeId,
-				);
-				const endIndex = nodeIndexMap.get(
-					arrow.props.end.boundShapeId as TLShapeId,
-				);
-
-				if (startIndex === undefined || endIndex === undefined) return;
-
-				// Add constraints for light-blue arrows
-				// TODO: make this parametrised/more interesting
-				if (arrow.props.color === "light-blue") {
-					constrainVertical.add(startIndex);
-					constrainVertical.add(endIndex);
-					return;
-				}
-				const graphLink = { source: startIndex, target: endIndex };
-				graphLinks.push(graphLink);
+				arrowShapes.push(shape as TLArrowShape);
 			} else {
-				nodeShapes.push(shape);
-				nodeShapeGeometry.push(editor.getShapeGeometry(shape));
+				nonArrowShapes.push(shape);
+				geoShapeGeometry.push(editor.getShapeGeometry(shape));
 			}
 		}
 		// Deselect so that shapes can move when first enabling graph layout.
 		// We freeze positions of selected shapes in the layout loop.
 		editor.selectNone();
 
+		// Setup data we will need before and after layout
+		const graphNodes: GraphNode[] = [];
+		const graphLinks: GraphEdgeIndexPair[] = [];
+		const constrainVertical: Set<number> = new Set();
+
 		// Create graph nodes and links
-		nodeShapes.forEach((s, i) => {
-			const geo = nodeShapeGeometry[i];
+		nonArrowShapes.forEach((s, i) => {
+			const geo = geoShapeGeometry[i];
 			const graphNode = {
 				// index, x, y, width, height are used by cola.js
 				index: i,
@@ -117,6 +94,33 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 				color: "color" in s.props ? s.props.color : "black",
 			};
 			graphNodes.push(graphNode);
+		});
+
+		// Create lookup so we can get node indexes in O(1) time
+		const nodeIndexMap = new Map(
+			graphNodes.map((node, index) => [node.id, index]),
+		);
+		arrowShapes.forEach((s) => {
+			// TODO: Handle unbound arrows
+			const arrow = s as TLArrowShape & BoundArrow;
+			const startIndex = nodeIndexMap.get(
+				arrow.props.start.boundShapeId as TLShapeId,
+			);
+			const endIndex = nodeIndexMap.get(
+				arrow.props.end.boundShapeId as TLShapeId,
+			);
+
+			if (startIndex === undefined || endIndex === undefined) return;
+
+			// Add constraints for light-blue arrows
+			// TODO: make this parametrised/more interesting
+			if (arrow.props.color === "light-blue") {
+				constrainVertical.add(startIndex);
+				constrainVertical.add(endIndex);
+				return;
+			}
+			const graphLink = { source: startIndex, target: endIndex };
+			graphLinks.push(graphLink);
 		});
 
 		// Setup constraints
@@ -159,9 +163,8 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 					node.y = shape.y + node.height / 2;
 				}
 
-
 				// Update shape sizes if they've changed
-				// TODO: avoid this expensive op
+				// TODO: avoid this expensive check
 				const geo = editor.getShapeGeometry(node.id);
 				node.width = geo.center.x * 2;
 				node.height = geo.center.y * 2;
