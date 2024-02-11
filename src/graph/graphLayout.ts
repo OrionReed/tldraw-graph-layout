@@ -2,7 +2,6 @@ import {
 	Editor,
 	Geometry2d,
 	TLArrowShape,
-	TLGeoShape,
 	TLShape,
 	TLShapeId,
 } from "@tldraw/tldraw";
@@ -17,16 +16,16 @@ type GraphNode = {
 	width: number;
 	height: number;
 };
-type GraphEdgeIdPair = { source: number; target: number };
+type GraphEdgeIndexPair = { source: number; target: number };
 type BoundArrow = {
 	props: { start: { boundShapeId: string }; end: { boundShapeId: string } };
 };
-type Link = {
+type ColaLink = {
 	source: { x: number; y: number; width: number; height: number; };
 	target: { x: number; y: number; width: number; height: number; };
 }
 
-function calculateLinkDistance(link: Link) {
+function calculateLinkDistance(link: ColaLink) {
 	// Calculate horizontal and vertical distances between centers
 	const dx = Math.abs(link.target.x - link.source.x);
 	const dy = Math.abs(link.target.y - link.source.y);
@@ -80,7 +79,7 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 
 		// Setup data we will need before and after layout
 		const graphNodes: GraphNode[] = [];
-		const graphLinks: GraphEdgeIdPair[] = [];
+		const graphLinks: GraphEdgeIndexPair[] = [];
 		const constrainVertical: Set<number> = new Set();
 
 		// Create graph nodes and links
@@ -148,7 +147,7 @@ export const useGraphLayout = (editor: Editor, enabled: boolean) => {
 			.nodes(graphNodes)
 			.links(graphLinks)
 			.avoidOverlaps(true)
-			.linkDistance((link) => calculateLinkDistance(link as Link))
+			.linkDistance((link) => calculateLinkDistance(link as ColaLink))
 			.handleDisconnected(true)
 			.constraints(constraints);
 
