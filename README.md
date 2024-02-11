@@ -26,6 +26,7 @@ yarn deploy
 1. Any shapes connected with arrows are included in the graph layout (this extends to videos, frames, and all other shapes)
 2. When you select a shape, it will be "fixed" so you can move it around. Deselect to unfreeze.
 3. Making a shape red will fix it in place
+4. Light blue arrows create an alignment constraint between two shapes
 
 # Contributing
 Please open an issue or PR if you have any suggestions or improvements! Especially looking for:
