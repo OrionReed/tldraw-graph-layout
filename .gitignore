@@ -11,10 +11,16 @@ node_modules
 dist
 dist-ssr
 *.local
+.vscode
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -23,5 +29,4 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
-
 .env
