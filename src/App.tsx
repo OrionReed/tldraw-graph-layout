@@ -4,23 +4,25 @@ import { DevUi } from "./graph/GraphControls";
 import { useYjsStore } from "./useYjsStore";
 import { uiOverrides } from "./graph/uiOverrides";
 
-const HOST_URL = import.meta.env.DEV
-	? "ws://localhost:1234"
-	: import.meta.env.VITE_PRODUCTION_URL.replace("https://", "ws://"); // remove protocol just in case
-
-export default function Canvas() {
+const store = () => {
+	const hostUrl = import.meta.env.DEV
+		? "ws://localhost:1234"
+		: import.meta.env.VITE_PRODUCTION_URL.replace("https://", "ws://"); // remove protocol just in case
 	const roomId =
 		new URLSearchParams(window.location.search).get("room") || "42";
-	const store = useYjsStore({
+	return useYjsStore({
 		roomId: roomId,
-		hostUrl: HOST_URL,
+		hostUrl: hostUrl,
 	});
+}
+
+export default function Canvas() {
 
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
 				autoFocus
-				store={store}
+				// store={store()}
 				shareZone={<NameEditor />}
 				overrides={uiOverrides}
 			>

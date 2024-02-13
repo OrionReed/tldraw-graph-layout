@@ -151,12 +151,12 @@ export function useYjsStore({
 				createPresenceStateDerivation(userPreferences)(store);
 
 			// Set our initial presence from the derivation's current value
-			room.awareness.setLocalStateField("presence", presenceDerivation.value);
+			room.awareness.setLocalStateField("presence", presenceDerivation.get());
 
 			// When the derivation change, sync presence to to yjs awareness
 			unsubs.push(
 				react("when presence changes", () => {
-					const presence = presenceDerivation.value;
+					const presence = presenceDerivation.get();
 					requestAnimationFrame(() => {
 						room.awareness.setLocalStateField("presence", presence);
 					});
