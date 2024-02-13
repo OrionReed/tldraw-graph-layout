@@ -1,5 +1,5 @@
 # tldraw graph layout
-This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/), JS port of [libcola](http://www.adaptagrams.org).
+This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/), JS port of [libcola](http://www.adaptagrams.org). This repo is aimed to be a starting point for further exploration and there's lots to be explored! I would also love PRs if you have core improvements which everyone can benefit from.
 
 You can mess around with it online [here](https://orionreed.github.io/tldraw-graph-layout/)
 
