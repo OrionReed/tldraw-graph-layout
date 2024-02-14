@@ -130,7 +130,7 @@ export const step = (editor: Editor, layout: Layout) => {
       });
     }
     else {
-      editor.animateShape({ id: node.id, type: 'geo', x: node.x - geo.center.x, y: node.y - geo.center.y }, { duration: 20, easing: (t) => t * t });
+      editor.animateShape({ id: node.id, type: 'geo', x: node.x - geo.center.x, y: node.y - geo.center.y }, { duration: 80, easing: (t) => t * t });
     }
   }
 };
