@@ -3,7 +3,7 @@ This repo demonstrates an interactive force-directed graph layout integration wi
 
 You can mess around with it online [here](https://orionreed.github.io/tldraw-graph-layout/)
 
-https://github.com/OrionReed/tldraw-graph-layout/assets/16704290/f6d91953-d318-4af0-aa4b-92fce922e717
+https://github.com/OrionReed/tldraw-graph-layout/assets/16704290/0245917d-3a4b-45ad-a3a5-4c6fc4e46a04
 
 ## Usage
 1. Select shapes you wish to include in the physics simulation
