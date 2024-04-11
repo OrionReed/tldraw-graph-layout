@@ -10,7 +10,7 @@ export abstract class BaseCollection {
   /** A set containing the shapes that belong to this collection. */
   protected shapes: Map<TLShapeId, TLShape> = new Map();
   /** A reference to the \@tldraw Editor instance. */
-  protected editor: Editor | null = null;
+  protected editor: Editor;
 
   public constructor(editor: Editor) {
     this.editor = editor;

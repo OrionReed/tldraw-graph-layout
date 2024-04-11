@@ -1,4 +1,4 @@
-import { calculateLinkDistance, createGraphFromSelection, step } from "./graph";
+import { calculateLinkDistance, createGraphFromSelection, step } from "./graphUtils";
 import { Editor } from "@tldraw/tldraw";
 import { useEffect } from "react";
 import { Layout } from "webcola";

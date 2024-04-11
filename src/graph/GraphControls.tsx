@@ -1,8 +1,7 @@
 import { track, useEditor } from "@tldraw/tldraw";
 import { useEffect, useState } from "react";
 import "../css/dev-ui.css";
-import { useGraphLayout } from "./useGraphLayout.js";
-import { useCollection } from "../collections/useCollection.js";
+import { useCollection } from "../collections/useCollection";
 
 export const GraphUi = track(() => {
 	const editor = useEditor();
@@ -13,26 +12,13 @@ export const GraphUi = track(() => {
 		if (graphCollection) {
 			if (graphEnabled) {
 				graphCollection.add(editor.getSelectedShapes())
+				editor.selectNone()
 			}
 			else {
 				graphCollection.clear()
 			}
 		}
 	}, [graphEnabled]);
-
-	// useGraphLayout(editor, graphEnabled);
-
-	// useEffect(() => {
-	// 	const toggleGraph = () => {
-	// 		setGraph(prev => !prev);
-	// 	};
-
-	// 	window.addEventListener('toggleGraphLayoutEvent', toggleGraph);
-
-	// 	return () => {
-	// 		window.removeEventListener('toggleGraphLayoutEvent', toggleGraph);
-	// 	};
-	// }, []);
 
 	return (
 		<div className="custom-layout">
