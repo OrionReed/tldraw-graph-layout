@@ -41,7 +41,7 @@ export abstract class BaseCollection {
    * Called when the properties of a shape belonging to the collection change.
    * @param shape The shape whose properties have changed.
    */
-  protected onShapePropsChange(shape: TLShape) { }
+  protected onShapePropsChange(prev: TLShape, next: TLShape) { }
 
   public add(shapes: TLShape[]) {
     shapes.forEach(shape => {
@@ -66,10 +66,8 @@ export abstract class BaseCollection {
     return this.shapes;
   }
 
-  public updateShapes(shapes: TLShape[]) {
-    shapes.forEach(shape => {
-      this.shapes.set(shape.id, shape)
-      this.onShapePropsChange(shape)
-    })
+  public updateShape(prev: TLShape, next: TLShape) {
+    this.shapes.set(next.id, next)
+    this.onShapePropsChange(prev, next)
   }
 }

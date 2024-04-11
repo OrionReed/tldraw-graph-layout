@@ -36,10 +36,10 @@ const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collect
   }, [editor, collectionClasses]);
 
   // Handle shape property changes
-  const handleShapeChange = (shape: TLShape) => {
+  const handleShapeChange = (prev: TLShape, next: TLShape) => {
     for (const col of _collections) {
-      if (col.getShapes().has(shape.id)) {
-        col.updateShapes([shape]);
+      if (col.getShapes().has(next.id)) {
+        col.updateShape(prev, next);
       }
     }
   };
@@ -51,7 +51,7 @@ const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collect
         const prevShape = prev as TLShape;
         const nextShape = next as TLShape;
         if (prevShape.props !== nextShape.props) {
-          handleShapeChange(nextShape);
+          handleShapeChange(prevShape, nextShape);
         }
       };
     }

@@ -1,6 +1,6 @@
 import { Layout } from 'webcola';
 import { BaseCollection } from '../collections/BaseCollection';
-import { Editor, Geometry2d, TLArrowShape, TLShape, TLShapeId } from '@tldraw/tldraw';
+import { Editor, TLArrowShape, TLGeoShape, TLShape, TLShapeId } from '@tldraw/tldraw';
 
 type ColaNode = {
   id: TLShapeId;
@@ -9,24 +9,32 @@ type ColaNode = {
   width: number;
   height: number;
   rotation: number;
+  color?: string;
 };
-type ColaLink = {
+type ColaIdLink = {
   source: TLShapeId
   target: TLShapeId
 };
-
-type LinkTargets = {
+type ColaNodeLink = {
   source: ColaNode
   target: ColaNode
+};
+
+type AlignmentConstraint = {
+  type: 'alignment',
+  axis: 'x' | 'y',
+  offsets: { node: TLShapeId, offset: number }[]
 }
+
+type ColaConstraint = AlignmentConstraint
 
 export class GraphLayoutCollection extends BaseCollection {
   override id = 'graphLayout';
   graphSim: Layout;
   animFrame = -1;
   colaNodes: Map<TLShapeId, ColaNode> = new Map();
-  colaLinks: Set<ColaLink> = new Set();
-  colaConstraints: any[] = [];
+  colaLinks: Set<ColaIdLink> = new Set();
+  colaConstraints: ColaConstraint[] = [];
   public isRunning = false
 
   constructor(editor: Editor) {
@@ -44,13 +52,14 @@ export class GraphLayoutCollection extends BaseCollection {
   override onAdd(shapes: TLShape[]) {
     super.onAdd(shapes);
     for (const shape of shapes) {
+      // TODO: add adjascent arrows
       if (shape.type === "arrow")
         this.addArrow(shape as TLArrowShape);
       else
         this.addGeo(shape);
 
     }
-    this.updateGraphElements();
+    this.refreshGraph();
   }
 
   override onRemove(shapes: TLShape[]) {
@@ -66,13 +75,33 @@ export class GraphLayoutCollection extends BaseCollection {
       link => !removedShapeIds.has(link.source) && !removedShapeIds.has(link.target)
     ));
 
-    this.updateGraphElements();
+    this.refreshGraph();
+  }
+
+  override onShapePropsChange(prev: TLShape, next: TLShape) {
+    if (prev.type === 'geo' && next.type === 'geo') {
+      const prevShape = prev as TLGeoShape
+      const nextShape = next as TLGeoShape
+      // update color if its changed and refresh constraints which use this
+      if (prevShape.props.color !== nextShape.props.color) {
+        const existingNode = this.colaNodes.get(next.id);
+        if (existingNode) {
+          this.colaNodes.set(next.id, {
+            ...existingNode,
+            color: nextShape.props.color,
+          });
+        }
+        this.refreshGraph();
+      }
+    }
   }
 
   override clear() {
     super.clear();
     this.stopSimulation();
   }
+
+
 
   step = () => {
     this.graphSim.start(1, 1, 1, 0, true, false);
@@ -105,13 +134,11 @@ export class GraphLayoutCollection extends BaseCollection {
     }
   };
 
-
-
   addArrow = (arrow: TLArrowShape) => {
     const source = arrow.props.start.type === 'binding' ? this.editor.getShape(arrow.props.start.boundShapeId) : undefined;
     const target = arrow.props.end.type === 'binding' ? this.editor.getShape(arrow.props.end.boundShapeId) : undefined;
     if (source && target) {
-      const link: ColaLink = {
+      const link: ColaIdLink = {
         source: source.id,
         target: target.id
       };
@@ -127,12 +154,16 @@ export class GraphLayoutCollection extends BaseCollection {
       y: shape.y + geo.center.y,
       width: geo.center.x * 2,
       height: geo.center.y * 2,
-      rotation: shape.rotation
+      rotation: shape.rotation,
+      color: shape.props.color || undefined
     };
     this.colaNodes.set(shape.id, node);
   }
 
-  updateGraphElements() {
+  refreshGraph() {
+    // TODO: remove this hardcoded behaviour
+    this.editor.selectNone()
+    this.refreshConstraints();
     const nodes = [...this.colaNodes.values()];
     const nodeIdToIndex = new Map(nodes.map((n, i) => [n.id, i]));
     const links = [...this.colaLinks].map(l => ({
@@ -140,14 +171,62 @@ export class GraphLayoutCollection extends BaseCollection {
       target: nodeIdToIndex.get(l.target)
     }));
 
+    const constraints = this.colaConstraints.map(constraint => {
+      if (constraint.type === 'alignment') {
+        return {
+          ...constraint,
+          offsets: constraint.offsets.map(offset => ({
+            node: nodeIdToIndex.get(offset.node),
+            offset: offset.offset
+          }))
+        };
+      }
+      return constraint;
+    });
+
     this.graphSim
       .nodes(nodes)
       .links(links)
       .avoidOverlaps(true)
-      .linkDistance((edge) => calcEdgeDistance(edge as LinkTargets))
+      .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
       .handleDisconnected(true)
-    // .constraints(this.colaConstraints);
+      .constraints(constraints);
   }
+
+  refreshConstraints() {
+    const alignmentConstraintX: AlignmentConstraint = {
+      type: 'alignment',
+      axis: 'x',
+      offsets: [],
+    };
+    const alignmentConstraintY: AlignmentConstraint = {
+      type: 'alignment',
+      axis: 'y',
+      offsets: [],
+    };
+
+    // Iterate over shapes and generate constraints based on conditions
+    for (const node of this.colaNodes.values()) {
+      if (node.color === "red") {
+        // Add alignment offset for red shapes
+        alignmentConstraintX.offsets.push({ node: node.id, offset: 0 });
+      }
+      if (node.color === "blue") {
+        // Add alignment offset for red shapes
+        alignmentConstraintY.offsets.push({ node: node.id, offset: 0 });
+      }
+    }
+
+    const constraints = [];
+    if (alignmentConstraintX.offsets.length > 0) {
+      constraints.push(alignmentConstraintX);
+    }
+    if (alignmentConstraintY.offsets.length > 0) {
+      constraints.push(alignmentConstraintY);
+    }
+    this.colaConstraints = constraints;
+  }
+
   startSimulation() {
     if (this.isRunning) return;
     this.isRunning = true;
@@ -157,13 +236,12 @@ export class GraphLayoutCollection extends BaseCollection {
     };
     simLoop();
   }
+
   stopSimulation() {
     if (!this.isRunning) return;
     cancelAnimationFrame(this.animFrame);
     this.isRunning = false;
   }
-
-
 }
 
 function getCornerToCenterOffset(w: number, h: number, rotation: number) {
@@ -179,7 +257,7 @@ function getCornerToCenterOffset(w: number, h: number, rotation: number) {
   return { x: rotatedCenterX, y: rotatedCenterY };
 }
 
-function calcEdgeDistance(edge: LinkTargets) {
+function calcEdgeDistance(edge: ColaNodeLink) {
   const LINK_DISTANCE = 100;
 
   // horizontal and vertical distances between centers
