@@ -1,5 +1,5 @@
 import { Layout } from 'webcola';
-import { BaseCollection } from '../collections/BaseCollection';
+import { BaseCollection } from '../../tldraw-collections/src/BaseCollection';
 import { Editor, TLArrowShape, TLGeoShape, TLShape, TLShapeId } from '@tldraw/tldraw';
 
 type ColaNode = {
@@ -50,7 +50,6 @@ export class GraphLayoutCollection extends BaseCollection {
   }
 
   override onAdd(shapes: TLShape[]) {
-    super.onAdd(shapes);
     for (const shape of shapes) {
       // TODO: add adjascent arrows
       if (shape.type === "arrow")
@@ -63,8 +62,6 @@ export class GraphLayoutCollection extends BaseCollection {
   }
 
   override onRemove(shapes: TLShape[]) {
-    super.onRemove(shapes);
-
     const removedShapeIds = new Set(shapes.map(shape => shape.id));
 
     for (const shape of shapes) {
@@ -78,7 +75,7 @@ export class GraphLayoutCollection extends BaseCollection {
     this.refreshGraph();
   }
 
-  override onShapePropsChange(prev: TLShape, next: TLShape) {
+  override onShapeChange(prev: TLShape, next: TLShape) {
     if (prev.type === 'geo' && next.type === 'geo') {
       const prevShape = prev as TLGeoShape
       const nextShape = next as TLGeoShape
@@ -96,8 +93,7 @@ export class GraphLayoutCollection extends BaseCollection {
     }
   }
 
-  override clear() {
-    super.clear();
+  override onClear() {
     this.stopSimulation();
   }
 
@@ -155,7 +151,7 @@ export class GraphLayoutCollection extends BaseCollection {
       width: geo.center.x * 2,
       height: geo.center.y * 2,
       rotation: shape.rotation,
-      color: shape.props.color || undefined
+      color: (shape.props as any).color
     };
     this.colaNodes.set(shape.id, node);
   }
@@ -186,9 +182,11 @@ export class GraphLayoutCollection extends BaseCollection {
 
     this.graphSim
       .nodes(nodes)
+      // @ts-ignore
       .links(links)
       .avoidOverlaps(true)
-      .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
+      // .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
+      .linkDistance(250)
       .handleDisconnected(true)
       .constraints(constraints);
   }

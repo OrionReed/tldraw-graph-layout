@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "tldraw-collections/src/BaseCollection.ts", "tldraw-collections/src/CollectionProvider.tsx", "tldraw-collections/src/useCollection.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

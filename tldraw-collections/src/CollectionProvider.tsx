@@ -14,7 +14,6 @@ interface CollectionProviderProps {
   editor: Editor | undefined;
   /** A list of collections which should extend BaseCollection */
   collections: Collection[];
-  showBounds?: boolean
   children: React.ReactNode;
 }
 
@@ -24,7 +23,7 @@ const CollectionContext = createContext<CollectionContextValue | undefined>(unde
  * CollectionProvider is a React component that manages the lifecycle and behavior of collections in @tldraw.
  * It instantiates the provided collection classes, associates them with the editor, and handles shape changes and deletions.
  */
-const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collections: collectionClasses, showBounds, children, }) => {
+const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collections: collectionClasses, children, }) => {
   const [_collections, setCollections] = useState<BaseCollection[]>([]);
 
   // Instantiate collection classes and call onCreate when the editor and collectionClasses change
@@ -39,7 +38,7 @@ const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collect
   const handleShapeChange = (prev: TLShape, next: TLShape) => {
     for (const col of _collections) {
       if (col.getShapes().has(next.id)) {
-        col.updateShape(prev, next);
+        col._onShapeChange(prev, next);
       }
     }
   };

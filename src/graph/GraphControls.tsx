@@ -1,7 +1,7 @@
 import { useEditor } from "@tldraw/tldraw";
 import { useCallback, useEffect, useState } from "react";
 import "../css/dev-ui.css";
-import { useCollection } from "../collections/useCollection";
+import { useCollection } from "../../tldraw-collections/src/useCollection";
 
 export const GraphUi = () => {
 	const editor = useEditor();

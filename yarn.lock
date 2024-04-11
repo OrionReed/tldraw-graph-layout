@@ -822,6 +822,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orion/tldraw-collections@file:./tldraw-collections::locator=tldraw-yjs-example%40workspace%3A.":
+  version: 0.1.0
+  resolution: "@orion/tldraw-collections@file:./tldraw-collections#./tldraw-collections::hash=e5ddd3&locator=tldraw-yjs-example%40workspace%3A."
+  peerDependencies:
+    "@tldraw/tldraw": 2.0.0-beta.2
+    react: ^18.2.0
+  checksum: d06f0ff4a5bffcaa73817785c38e8c2e2e15746d5f71dec74ee1e89e53ce3684d0f05699c8e16cfcca942a027596c07dc4431f0c34438ad61ddbb9e139627556
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -4122,6 +4132,7 @@ __metadata:
   resolution: "tldraw-yjs-example@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.4.1"
+    "@orion/tldraw-collections": "file:./tldraw-collections"
     "@tldraw/tldraw": "npm:2.0.0-beta.2"
     "@types/react": "npm:^18.2.15"
     "@types/react-dom": "npm:^18.2.7"

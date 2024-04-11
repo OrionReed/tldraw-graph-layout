@@ -3,7 +3,7 @@ import {
   TLUiOverrides,
   TLUiTranslationKey,
 } from "@tldraw/tldraw";
-import { useCollection } from "../collections/useCollection";
+import { useCollection } from "../../tldraw-collections/src/useCollection";
 
 export const uiOverrides: TLUiOverrides = {
   actions(_editor, actions) {
