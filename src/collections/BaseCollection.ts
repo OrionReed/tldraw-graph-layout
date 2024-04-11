@@ -20,7 +20,7 @@ export abstract class BaseCollection {
    * Called when a shape is added to the collection.
    * @param shape The shape being added to the collection.
    */
-  protected onAdd(shape: TLShape) {
+  protected onAdd(shapes: TLShape[]) {
     this.onMembershipChange();
   }
 
@@ -28,7 +28,7 @@ export abstract class BaseCollection {
    * Called when a shape is removed from the collection.
    * @param shape The shape being removed from the collection.
    */
-  protected onRemove(shape: TLShape) {
+  protected onRemove(shapes: TLShape[]) {
     this.onMembershipChange();
   }
 
@@ -46,21 +46,20 @@ export abstract class BaseCollection {
   public add(shapes: TLShape[]) {
     shapes.forEach(shape => {
       this.shapes.set(shape.id, shape)
-      this.onAdd(shape);
+      this.onAdd(shapes);
     });
   }
 
   public remove(shapes: TLShape[]) {
     shapes.forEach(shape => {
       this.shapes.delete(shape.id);
-      this.onRemove(shape);
     });
+    this.onRemove(shapes);
   }
 
   public clear() {
     this.shapes.clear()
     this.onMembershipChange()
-    console.log('cleared')
   }
 
   public getShapes(): Map<TLShapeId, TLShape> {

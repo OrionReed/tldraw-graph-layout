@@ -43,9 +43,9 @@ export class GraphLayoutCollection extends BaseCollection {
     this.startSimulation();
   }
 
-  override onAdd(shape: TLShape) {
-    super.onAdd(shape);
-    const { colaNodes, colaLinks } = this.addShapes([shape]);
+  override onAdd(shapes: TLShape[]) {
+    super.onAdd(shapes);
+    const { colaNodes, colaLinks } = this.addShapes(shapes);
 
     for (const node of colaNodes) {
       this.colaNodes.set(node.id, node);
@@ -58,16 +58,18 @@ export class GraphLayoutCollection extends BaseCollection {
     this.updateGraphElements();
   }
 
-  override onRemove(shape: TLShape) {
-    super.onRemove(shape);
+  override onRemove(shapes: TLShape[]) {
+    super.onRemove(shapes);
 
-    this.colaNodes.delete(shape.id);
+    const removedShapeIds = new Set(shapes.map(shape => shape.id));
 
-    for (const link of this.colaLinks) {
-      if (link.source === shape.id || link.target === shape.id) {
-        this.colaLinks.delete(link);
-      }
+    for (const shape of shapes) {
+      this.colaNodes.delete(shape.id);
     }
+
+    this.colaLinks = new Set([...this.colaLinks].filter(
+      link => !removedShapeIds.has(link.source) && !removedShapeIds.has(link.target)
+    ));
 
     this.updateGraphElements();
   }
