@@ -1,4 +1,4 @@
-import { Layout, Link } from 'webcola';
+import { Layout } from 'webcola';
 import { BaseCollection } from '../collections/BaseCollection';
 import { Editor, TLArrowShape, TLShape, TLShapeId } from '@tldraw/tldraw';
 
@@ -139,17 +139,12 @@ export class GraphLayoutCollection extends BaseCollection {
   };
 
   updateGraphElements() {
-    console.log('updateGraphElements', this.colaNodes, this.colaLinks);
-
     const nodes = [...this.colaNodes.values()];
     const nodeIdToIndex = new Map(nodes.map((n, i) => [n.id, i]));
     const links = [...this.colaLinks].map(l => ({
       source: nodeIdToIndex.get(l.source),
       target: nodeIdToIndex.get(l.target)
     }));
-    console.log('nodes', nodes);
-    console.log('links', links);
-
 
     this.graphSim
       .nodes(nodes)
