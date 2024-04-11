@@ -2,24 +2,37 @@ import { track, useEditor } from "@tldraw/tldraw";
 import { useEffect, useState } from "react";
 import "../css/dev-ui.css";
 import { useGraphLayout } from "./useGraphLayout.js";
+import { useCollection } from "../collections/useCollection.js";
 
-export const DevUi = track(() => {
+export const GraphUi = track(() => {
 	const editor = useEditor();
-	const [graphEnabled, setGraph] = useState(false);
-
-	useGraphLayout(editor, graphEnabled);
+	const graphCollection = useCollection('graphLayout')
+	const [graphEnabled, setEnabled] = useState(false);
 
 	useEffect(() => {
-		const toggleGraph = () => {
-			setGraph(prev => !prev);
-		};
+		if (graphCollection) {
+			if (graphEnabled) {
+				graphCollection.add(editor.getSelectedShapes())
+			}
+			else {
+				graphCollection.clear()
+			}
+		}
+	}, [graphEnabled]);
 
-		window.addEventListener('toggleGraphLayoutEvent', toggleGraph);
+	// useGraphLayout(editor, graphEnabled);
 
-		return () => {
-			window.removeEventListener('toggleGraphLayoutEvent', toggleGraph);
-		};
-	}, []);
+	// useEffect(() => {
+	// 	const toggleGraph = () => {
+	// 		setGraph(prev => !prev);
+	// 	};
+
+	// 	window.addEventListener('toggleGraphLayoutEvent', toggleGraph);
+
+	// 	return () => {
+	// 		window.removeEventListener('toggleGraphLayoutEvent', toggleGraph);
+	// 	};
+	// }, []);
 
 	return (
 		<div className="custom-layout">
@@ -29,7 +42,7 @@ export const DevUi = track(() => {
 					title="Toggle Graph Layout (G)"
 					className="custom-button"
 					data-isactive={graphEnabled}
-					onClick={() => setGraph(!graphEnabled)}
+					onClick={() => setEnabled(!graphEnabled)}
 				>
 					Graph
 				</button>

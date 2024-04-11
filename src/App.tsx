@@ -1,8 +1,13 @@
-import { Tldraw, track, useEditor } from "@tldraw/tldraw";
+import { Editor, Tldraw, track, useEditor } from "@tldraw/tldraw";
 import "@tldraw/tldraw/tldraw.css";
-import { DevUi } from "./graph/GraphControls";
+import { GraphUi } from "./graph/GraphControls";
 import { useYjsStore } from "./useYjsStore";
 import { uiOverrides } from "./graph/uiOverrides";
+import { Collection, CollectionProvider } from "./collections/CollectionProvider";
+import { useState } from "react";
+import { GraphLayoutCollection } from "./graph/GraphLayoutCollection";
+
+const collections: Collection[] = [GraphLayoutCollection]
 
 const store = () => {
 	const hostUrl = import.meta.env.DEV
@@ -17,17 +22,21 @@ const store = () => {
 }
 
 export default function Canvas() {
-
+	const [editor, setEditor] = useState<Editor | undefined>();
 	return (
 		<div className="tldraw__editor">
-			<Tldraw
-				autoFocus
-				// store={store()}
-				shareZone={<NameEditor />}
-				overrides={uiOverrides}
-			>
-				<DevUi />
-			</Tldraw>
+			<CollectionProvider editor={editor} collections={collections}>
+				<Tldraw
+					autoFocus
+					// store={store()}
+					shareZone={<NameEditor />}
+					overrides={uiOverrides}
+					onMount={setEditor}
+					persistenceKey="tldraw-graph"
+				>
+					<GraphUi />
+				</Tldraw>
+			</CollectionProvider>
 		</div>
 	);
 }
