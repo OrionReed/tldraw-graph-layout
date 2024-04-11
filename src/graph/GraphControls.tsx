@@ -1,37 +1,48 @@
-import { track, useEditor } from "@tldraw/tldraw";
-import { useEffect, useState } from "react";
+import { useEditor } from "@tldraw/tldraw";
+import { useCallback, useEffect, useState } from "react";
 import "../css/dev-ui.css";
 import { useCollection } from "../collections/useCollection";
 
-export const GraphUi = track(() => {
+export const GraphUi = () => {
 	const editor = useEditor();
 	const graphCollection = useCollection('graphLayout')
 	const [graphEnabled, setEnabled] = useState(false);
 
-	const addSelectedToGraph = () => {
+	const handleAdd = () => {
 		if (graphCollection && graphEnabled) {
 			graphCollection.add(editor.getSelectedShapes())
 			editor.selectNone()
 		}
 	}
 
-	const removeSelectedFromGraph = () => {
+	const handleRemove = () => {
 		if (graphCollection && graphEnabled) {
 			graphCollection.remove(editor.getSelectedShapes())
 			editor.selectNone()
 		}
 	}
 
+	const handleToggle = useCallback(() => {
+
+		setEnabled(!graphEnabled);
+	}, [graphEnabled]);
+
 	useEffect(() => {
-		if (graphEnabled) {
-			editor.selectAll()
-			addSelectedToGraph()
+		if (graphEnabled && graphCollection) {
+			graphCollection.add(editor.getCurrentPageShapes())
 		}
 		else if (graphCollection) {
 			graphCollection.clear()
 		}
-	}, [graphEnabled]);
+	}, [graphEnabled, graphCollection]);
 
+	useEffect(() => {
+		window.addEventListener('toggleGraphLayoutEvent', handleToggle);
+
+		return () => {
+			window.removeEventListener('toggleGraphLayoutEvent', handleToggle);
+		};
+	}, [handleToggle]);
 
 	return (
 		<div className="custom-layout">
@@ -41,15 +52,15 @@ export const GraphUi = track(() => {
 					title="Toggle Graph Layout (G)"
 					className="custom-button"
 					data-isactive={graphEnabled}
-					onClick={() => setEnabled(!graphEnabled)}
+					onClick={handleToggle}
 				>
-					Graph
+					Graph ({graphEnabled ? "on" : "off"})
 				</button>
 				<button
 					type="button"
 					title="Add Selected"
 					className="custom-button"
-					onClick={addSelectedToGraph}
+					onClick={handleAdd}
 				>
 					+
 				</button>
@@ -57,11 +68,11 @@ export const GraphUi = track(() => {
 					type="button"
 					title="Remove Selected"
 					className="custom-button"
-					onClick={removeSelectedFromGraph}
+					onClick={handleRemove}
 				>
 					-
 				</button>
 			</div>
 		</div>
 	);
-});
+};

@@ -2,7 +2,7 @@ import { Editor, Tldraw, track, useEditor } from "@tldraw/tldraw";
 import "@tldraw/tldraw/tldraw.css";
 import { GraphUi } from "./graph/GraphControls";
 import { useYjsStore } from "./useYjsStore";
-// import { uiOverrides } from "./graph/__uiOverrides";
+import { uiOverrides } from "./graph/uiOverrides";
 import { Collection, CollectionProvider } from "./collections/CollectionProvider";
 import { useState } from "react";
 import { GraphLayoutCollection } from "./graph/GraphLayoutCollection";
@@ -30,7 +30,7 @@ export default function Canvas() {
 					autoFocus
 					// store={store()}
 					shareZone={<NameEditor />}
-					// overrides={uiOverrides}
+					overrides={uiOverrides}
 					onMount={setEditor}
 					persistenceKey="tldraw-graph"
 				>

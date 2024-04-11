@@ -36,11 +36,18 @@ export class GraphLayoutCollection extends BaseCollection {
   colaNodes: Map<TLShapeId, ColaNode> = new Map();
   colaLinks: Set<ColaLink> = new Set();
   colaConstraints: any[] = [];
+  public isRunning = false
 
   constructor(editor: Editor) {
     super(editor)
     this.graphSim = new Layout();
     this.startSimulation();
+
+    // TODO: think about other ways to do this kind of thing
+    window.addEventListener('toggleGraphLayoutEvent', () => {
+      if (this.isRunning) this.stopSimulation()
+      else this.startSimulation()
+    })
   }
 
   override onAdd(shapes: TLShape[]) {
@@ -157,6 +164,8 @@ export class GraphLayoutCollection extends BaseCollection {
     // .constraints(this.colaConstraints);
   }
   startSimulation() {
+    if (this.isRunning) return;
+    this.isRunning = true;
     const simLoop = () => {
       this.step();
       this.animFrame = requestAnimationFrame(simLoop);
@@ -164,7 +173,9 @@ export class GraphLayoutCollection extends BaseCollection {
     simLoop();
   }
   stopSimulation() {
+    if (!this.isRunning) return;
     cancelAnimationFrame(this.animFrame);
+    this.isRunning = false;
   }
 
   calcEdgeDistance(edge: LinkTargets) {

@@ -1,12 +1,10 @@
 import {
   TLUiEventSource,
-  TLUiMenuGroup,
   TLUiOverrides,
   TLUiTranslationKey,
-  menuItem,
 } from "@tldraw/tldraw";
+import { useCollection } from "../collections/useCollection";
 
-// In order to see select our custom shape tool, we need to add it to the ui.
 export const uiOverrides: TLUiOverrides = {
   actions(_editor, actions) {
     actions['toggle-graph-layout'] = {
@@ -20,13 +18,5 @@ export const uiOverrides: TLUiOverrides = {
       },
     }
     return actions
-  },
-  keyboardShortcutsMenu(_editor, shortcutsMenu, { actions }) {
-    const editGroup = shortcutsMenu.find(
-      (group) => group.id === 'shortcuts-dialog.tools'
-    ) as TLUiMenuGroup
-
-    editGroup.children.push(menuItem(actions['toggle-graph-layout']))
-    return shortcutsMenu
-  },
+  }
 }
