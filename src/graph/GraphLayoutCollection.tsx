@@ -35,18 +35,15 @@ export class GraphLayoutCollection extends BaseCollection {
   colaNodes: Map<TLShapeId, ColaNode> = new Map();
   colaLinks: Set<ColaIdLink> = new Set();
   colaConstraints: ColaConstraint[] = [];
-  public isRunning = false
 
   constructor(editor: Editor) {
     super(editor)
     this.graphSim = new Layout();
-    this.startSimulation();
-
-    // TODO: think about other ways to do this kind of thing
-    window.addEventListener('toggleGraphLayoutEvent', () => {
-      if (this.isRunning) this.stopSimulation()
-      else this.startSimulation()
-    })
+    const simLoop = () => {
+      this.step();
+      this.animFrame = requestAnimationFrame(simLoop);
+    };
+    simLoop();
   }
 
   override onAdd(shapes: TLShape[]) {
@@ -92,12 +89,6 @@ export class GraphLayoutCollection extends BaseCollection {
       }
     }
   }
-
-  override onClear() {
-    this.stopSimulation();
-  }
-
-
 
   step = () => {
     this.graphSim.start(1, 1, 1, 0, true, false);
@@ -225,21 +216,7 @@ export class GraphLayoutCollection extends BaseCollection {
     this.colaConstraints = constraints;
   }
 
-  startSimulation() {
-    if (this.isRunning) return;
-    this.isRunning = true;
-    const simLoop = () => {
-      this.step();
-      this.animFrame = requestAnimationFrame(simLoop);
-    };
-    simLoop();
-  }
 
-  stopSimulation() {
-    if (!this.isRunning) return;
-    cancelAnimationFrame(this.animFrame);
-    this.isRunning = false;
-  }
 }
 
 function getCornerToCenterOffset(w: number, h: number, rotation: number) {

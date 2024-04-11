@@ -1,31 +1,34 @@
 import { useEditor } from "@tldraw/tldraw";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../css/dev-ui.css";
 import { useCollection } from "../../tldraw-collections/src/useCollection";
 
 export const GraphUi = () => {
 	const editor = useEditor();
 	const graphCollection = useCollection('graphLayout')
-	const [graphEnabled, setEnabled] = useState(false);
 
 	const handleAdd = () => {
-		if (graphCollection && graphEnabled) {
+		if (graphCollection) {
 			graphCollection.add(editor.getSelectedShapes())
 			editor.selectNone()
 		}
 	}
 
 	const handleRemove = () => {
-		if (graphCollection && graphEnabled) {
+		if (graphCollection) {
 			graphCollection.remove(editor.getSelectedShapes())
 			editor.selectNone()
 		}
 	}
 
-	const handleToggle = useCallback(() => {
-
-		setEnabled(!graphEnabled);
-	}, [graphEnabled]);
+	const handleShortcut = () => {
+		if (!graphCollection) return
+		const empty = graphCollection.getShapes().size === 0
+		if (empty)
+			graphCollection.add(editor.getCurrentPageShapes())
+		else
+			graphCollection.clear()
+	};
 
 	const handleHighlight = () => {
 		if (graphCollection) {
@@ -34,41 +37,23 @@ export const GraphUi = () => {
 	}
 
 	useEffect(() => {
-		if (graphEnabled && graphCollection) {
-			graphCollection.add(editor.getCurrentPageShapes())
-		}
-		else if (graphCollection) {
-			graphCollection.clear()
-		}
-	}, [graphEnabled, graphCollection]);
-
-	useEffect(() => {
-		window.addEventListener('toggleGraphLayoutEvent', handleToggle);
+		window.addEventListener('toggleGraphLayoutEvent', handleShortcut);
 
 		return () => {
-			window.removeEventListener('toggleGraphLayoutEvent', handleToggle);
+			window.removeEventListener('toggleGraphLayoutEvent', handleShortcut);
 		};
-	}, [handleToggle]);
+	}, [handleShortcut]);
 
 	return (
 		<div className="custom-layout">
 			<div className="custom-toolbar">
 				<button
 					type="button"
-					title="Toggle Graph Layout (G)"
-					className="custom-button"
-					data-isactive={graphEnabled}
-					onClick={handleToggle}
-				>
-					Graph ({graphEnabled ? "on" : "off"})
-				</button>
-				<button
-					type="button"
 					title="Add Selected"
 					className="custom-button"
 					onClick={handleAdd}
 				>
-					+
+					Add
 				</button>
 				<button
 					type="button"
@@ -76,7 +61,7 @@ export const GraphUi = () => {
 					className="custom-button"
 					onClick={handleRemove}
 				>
-					-
+					Remove
 				</button>
 				<button
 					type="button"
@@ -84,7 +69,7 @@ export const GraphUi = () => {
 					className="custom-button"
 					onClick={handleHighlight}
 				>
-					Highlight
+					🔦
 				</button>
 			</div>
 		</div>
