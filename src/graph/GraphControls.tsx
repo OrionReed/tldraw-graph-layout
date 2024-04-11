@@ -27,6 +27,12 @@ export const GraphUi = () => {
 		setEnabled(!graphEnabled);
 	}, [graphEnabled]);
 
+	const handleHighlight = () => {
+		if (graphCollection) {
+			graphCollection.highlight()
+		}
+	}
+
 	useEffect(() => {
 		if (graphEnabled && graphCollection) {
 			graphCollection.add(editor.getCurrentPageShapes())
@@ -71,6 +77,14 @@ export const GraphUi = () => {
 					onClick={handleRemove}
 				>
 					-
+				</button>
+				<button
+					type="button"
+					title="Highlight Collection"
+					className="custom-button"
+					onClick={handleHighlight}
+				>
+					Highlight
 				</button>
 			</div>
 		</div>

@@ -62,6 +62,10 @@ export abstract class BaseCollection {
     this.onMembershipChange()
   }
 
+  public highlight() {
+    this.editor.setHintingShapes([...this.shapes.values()])
+  }
+
   public getShapes(): Map<TLShapeId, TLShape> {
     return this.shapes;
   }
