@@ -22,21 +22,19 @@ const store = () => {
 }
 
 export default function Canvas() {
-	const [editor, setEditor] = useState<Editor | undefined>();
 	return (
 		<div className="tldraw__editor">
-			<CollectionProvider editor={editor} collections={collections}>
-				<Tldraw
-					autoFocus
-					// store={store()}
-					shareZone={<NameEditor />}
-					overrides={uiOverrides}
-					onMount={setEditor}
-					persistenceKey="tldraw-graph"
-				>
+			<Tldraw
+				autoFocus
+				// store={store()}
+				shareZone={<NameEditor />}
+				overrides={uiOverrides}
+				persistenceKey="tldraw-graph"
+			>
+				<CollectionProvider collections={collections}>
 					<GraphUi />
-				</Tldraw>
-			</CollectionProvider>
+				</CollectionProvider>
+			</Tldraw>
 		</div>
 	);
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { TLShape, TLRecord, Editor } from '@tldraw/tldraw';
+import { TLShape, TLRecord, Editor, useEditor } from '@tldraw/tldraw';
 import { BaseCollection } from './BaseCollection';
 
 interface CollectionContextValue {
@@ -10,8 +10,6 @@ interface CollectionContextValue {
 type Collection = (new (editor: Editor) => BaseCollection)
 
 interface CollectionProviderProps {
-  /** An instance of the \@tldraw editor, should be passed from onMount in <Tldraw>. */
-  editor: Editor | undefined;
   /** A list of collections which should extend BaseCollection */
   collections: Collection[];
   children: React.ReactNode;
@@ -23,7 +21,8 @@ const CollectionContext = createContext<CollectionContextValue | undefined>(unde
  * CollectionProvider is a React component that manages the lifecycle and behavior of collections in @tldraw.
  * It instantiates the provided collection classes, associates them with the editor, and handles shape changes and deletions.
  */
-const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collections: collectionClasses, children, }) => {
+const CollectionProvider: React.FC<CollectionProviderProps> = ({ collections: collectionClasses, children, }) => {
+  const editor = useEditor()
   const [_collections, setCollections] = useState<BaseCollection[]>([]);
 
   // Instantiate collection classes and call onCreate when the editor and collectionClasses change
