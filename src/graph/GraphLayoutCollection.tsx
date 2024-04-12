@@ -33,7 +33,7 @@ export class GraphLayoutCollection extends BaseCollection {
   graphSim: Layout;
   animFrame = -1;
   colaNodes: Map<TLShapeId, ColaNode> = new Map();
-  colaLinks: Set<ColaIdLink> = new Set();
+  colaLinks: Map<string, ColaIdLink> = new Map();
   colaConstraints: ColaConstraint[] = [];
 
   constructor(editor: Editor) {
@@ -47,13 +47,14 @@ export class GraphLayoutCollection extends BaseCollection {
   }
 
   override onAdd(shapes: TLShape[]) {
+    console.log('adding');
+
     for (const shape of shapes) {
-      // TODO: add adjascent arrows
       if (shape.type === "arrow")
         this.addArrow(shape as TLArrowShape);
-      else
+      else {
         this.addGeo(shape);
-
+      }
     }
     this.refreshGraph();
   }
@@ -65,9 +66,12 @@ export class GraphLayoutCollection extends BaseCollection {
       this.colaNodes.delete(shape.id);
     }
 
-    this.colaLinks = new Set([...this.colaLinks].filter(
-      link => !removedShapeIds.has(link.source) && !removedShapeIds.has(link.target)
-    ));
+    // Filter out links where either source or target has been removed
+    for (const [key, link] of this.colaLinks) {
+      if (removedShapeIds.has(link.source) || removedShapeIds.has(link.target)) {
+        this.colaLinks.delete(key);
+      }
+    }
 
     this.refreshGraph();
   }
@@ -91,7 +95,7 @@ export class GraphLayoutCollection extends BaseCollection {
   }
 
   step = () => {
-    this.graphSim.start(1, 1, 1, 0, true, false);
+    this.graphSim.start(1, 0, 0, 0, true, false);
     for (const node of this.graphSim.nodes() as ColaNode[]) {
 
       const shape = this.editor.getShape(node.id);
@@ -111,7 +115,6 @@ export class GraphLayoutCollection extends BaseCollection {
       node.height = h;
       node.rotation = shape.rotation;
 
-      // TODO: batch updates?
       this.editor.updateShape({
         id: node.id,
         type: "geo",
@@ -125,11 +128,12 @@ export class GraphLayoutCollection extends BaseCollection {
     const source = arrow.props.start.type === 'binding' ? this.editor.getShape(arrow.props.start.boundShapeId) : undefined;
     const target = arrow.props.end.type === 'binding' ? this.editor.getShape(arrow.props.end.boundShapeId) : undefined;
     if (source && target) {
+      const key = `${source.id}->${target.id}`;
       const link: ColaIdLink = {
         source: source.id,
         target: target.id
       };
-      this.colaLinks.add(link);
+      this.colaLinks.set(key, link);
     }
   }
 
@@ -154,7 +158,8 @@ export class GraphLayoutCollection extends BaseCollection {
     this.refreshConstraints();
     const nodes = [...this.colaNodes.values()];
     const nodeIdToIndex = new Map(nodes.map((n, i) => [n.id, i]));
-    const links = [...this.colaLinks].map(l => ({
+    // Convert the Map values to an array for processing
+    const links = Array.from(this.colaLinks.values()).map(l => ({
       source: nodeIdToIndex.get(l.source),
       target: nodeIdToIndex.get(l.target)
     }));
@@ -177,10 +182,10 @@ export class GraphLayoutCollection extends BaseCollection {
       // @ts-ignore
       .links(links)
       .avoidOverlaps(true)
+      // you could use .linkDistance(250) too, which is stable but does not handle size
       .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
-      // .linkDistance(250)
       .handleDisconnected(true)
-      .constraints(constraints);
+      .constraints(constraints)
   }
 
   refreshConstraints() {
@@ -216,8 +221,6 @@ export class GraphLayoutCollection extends BaseCollection {
     }
     this.colaConstraints = constraints;
   }
-
-
 }
 
 function getCornerToCenterOffset(w: number, h: number, rotation: number) {

@@ -41,6 +41,7 @@ export const GraphUi = () => {
 	const handleHighlight = () => {
 		if (graphCollection) {
 			editor.setHintingShapes([...graphCollection.getShapes().values()])
+			updateSize()
 		}
 	}
 
