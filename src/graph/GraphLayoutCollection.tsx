@@ -134,13 +134,14 @@ export class GraphLayoutCollection extends BaseCollection {
   }
 
   addGeo = (shape: TLShape) => {
-    const geo = this.editor.getShapeGeometry(shape);
+    const { w, h } = this.editor.getShapeGeometry(shape).bounds
+    const { x, y } = getCornerToCenterOffset(w, h, shape.rotation)
     const node: ColaNode = {
       id: shape.id,
-      x: shape.x + geo.center.x,
-      y: shape.y + geo.center.y,
-      width: geo.center.x * 2,
-      height: geo.center.y * 2,
+      x: shape.x + x,
+      y: shape.y + y,
+      width: w,
+      height: h,
       rotation: shape.rotation,
       color: (shape.props as any).color
     };
