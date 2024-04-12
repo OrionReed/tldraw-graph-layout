@@ -54,9 +54,9 @@ export abstract class BaseCollection {
   public add(shapes: TLShape[]) {
     shapes.forEach(shape => {
       this.shapes.set(shape.id, shape)
-      this.onAdd(shapes);
-      this.onMembershipChange();
     });
+    this.onAdd(shapes);
+    this.onMembershipChange();
   }
 
   /**
