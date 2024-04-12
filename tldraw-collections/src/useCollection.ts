@@ -1,5 +1,5 @@
 import { BaseCollection } from "./BaseCollection";
-import { Collection, CollectionContext } from "./CollectionProvider";
+import { CollectionContext } from "./CollectionProvider";
 import { useContext } from "react";
 
 export const useCollection = <T extends BaseCollection = BaseCollection>(collectionId: string) => {

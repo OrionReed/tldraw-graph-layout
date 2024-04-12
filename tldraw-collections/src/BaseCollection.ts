@@ -81,13 +81,6 @@ export abstract class BaseCollection {
   }
 
   /**
-   * Highlights the shapes in the collection by setting them as hinting shapes in the editor.
-   */
-  public highlight() {
-    this.editor.setHintingShapes([...this.shapes.values()])
-  }
-
-  /**
    * Returns the map of shapes in the collection.
    * @returns The map of shapes in the collection, keyed by their IDs.
    */

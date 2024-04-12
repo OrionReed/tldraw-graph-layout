@@ -1,16 +1,22 @@
 import { useEditor } from "@tldraw/tldraw";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../css/dev-ui.css";
 import { useCollection } from "../../tldraw-collections/src/useCollection";
 
 export const GraphUi = () => {
 	const editor = useEditor();
 	const graphCollection = useCollection('graphLayout')
+	const [size, setSize] = useState(0)
+
+	const updateSize = () => {
+		setSize(graphCollection.getShapes().size)
+	}
 
 	const handleAdd = () => {
 		if (graphCollection) {
 			graphCollection.add(editor.getSelectedShapes())
 			editor.selectNone()
+			updateSize()
 		}
 	}
 
@@ -18,6 +24,7 @@ export const GraphUi = () => {
 		if (graphCollection) {
 			graphCollection.remove(editor.getSelectedShapes())
 			editor.selectNone()
+			updateSize()
 		}
 	}
 
@@ -28,11 +35,12 @@ export const GraphUi = () => {
 			graphCollection.add(editor.getCurrentPageShapes())
 		else
 			graphCollection.clear()
+		updateSize()
 	};
 
 	const handleHighlight = () => {
 		if (graphCollection) {
-			graphCollection.highlight()
+			editor.setHintingShapes([...graphCollection.getShapes().values()])
 		}
 	}
 
@@ -47,6 +55,7 @@ export const GraphUi = () => {
 	return (
 		<div className="custom-layout">
 			<div className="custom-toolbar">
+				<div>{size} shapes</div>
 				<button
 					type="button"
 					title="Add Selected"
