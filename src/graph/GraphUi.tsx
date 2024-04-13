@@ -1,11 +1,11 @@
 import { useEditor } from "@tldraw/tldraw";
 import { useEffect, useState } from "react";
 import "../css/dev-ui.css";
-import { useCollection } from "../../tldraw-collections/src/useCollection";
+import { useCollection } from "@tldraw-collections";
 
 export const GraphUi = () => {
 	const editor = useEditor();
-	const graphCollection = useCollection('graphLayout')
+	const graphCollection = useCollection('graph')
 	const [size, setSize] = useState(0)
 
 	const updateSize = () => {

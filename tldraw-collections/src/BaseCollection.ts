@@ -1,8 +1,7 @@
 import { Editor, TLShape, TLShapeId } from '@tldraw/tldraw';
 
 /**
- * BaseCollection is an abstract class that serves as a base for creating named collections of shapes in \@tldraw.
- * It provides a set of methods and properties that allow you to manage the membership and behavior of shapes within a collection.
+ * A PoC abstract collections class for @tldraw.
  */
 export abstract class BaseCollection {
   /** A unique identifier for the collection. */
@@ -86,6 +85,10 @@ export abstract class BaseCollection {
    */
   public getShapes(): Map<TLShapeId, TLShape> {
     return this.shapes;
+  }
+
+  public get size(): number {
+    return this.shapes.size;
   }
 
   public _onShapeChange(prev: TLShape, next: TLShape) {

@@ -822,16 +822,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@orion/tldraw-collections@file:./tldraw-collections::locator=tldraw-yjs-example%40workspace%3A.":
-  version: 0.1.0
-  resolution: "@orion/tldraw-collections@file:./tldraw-collections#./tldraw-collections::hash=e5ddd3&locator=tldraw-yjs-example%40workspace%3A."
-  peerDependencies:
-    "@tldraw/tldraw": 2.0.0-beta.2
-    react: ^18.2.0
-  checksum: d06f0ff4a5bffcaa73817785c38e8c2e2e15746d5f71dec74ee1e89e53ce3684d0f05699c8e16cfcca942a027596c07dc4431f0c34438ad61ddbb9e139627556
-  languageName: node
-  linkType: hard
-
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -3019,6 +3009,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"inherits@npm:2.0.3":
+  version: 2.0.3
+  resolution: "inherits@npm:2.0.3"
+  checksum: 6e56402373149ea076a434072671f9982f5fad030c7662be0332122fe6c0fa490acb3cc1010d90b6eff8d640b1167d77674add52dfd1bb85d545cf29e80e73e7
+  languageName: node
+  linkType: hard
+
 "inherits@npm:^2.0.3, inherits@npm:^2.0.4":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
@@ -3674,6 +3671,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path@npm:^0.12.7":
+  version: 0.12.7
+  resolution: "path@npm:0.12.7"
+  dependencies:
+    process: "npm:^0.11.1"
+    util: "npm:^0.10.3"
+  checksum: f795ce5438a988a590c7b6dfd450ec9baa1c391a8be4c2dea48baa6e0f5b199e56cd83b8c9ebf3991b81bea58236d2c32bdafe2c17a2e70c3a2e4c69891ade59
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -3703,6 +3710,13 @@ __metadata:
   version: 3.0.0
   resolution: "proc-log@npm:3.0.0"
   checksum: f66430e4ff947dbb996058f6fd22de2c66612ae1a89b097744e17fb18a4e8e7a86db99eda52ccf15e53f00b63f4ec0b0911581ff2aac0355b625c8eac509b0dc
+  languageName: node
+  linkType: hard
+
+"process@npm:^0.11.1":
+  version: 0.11.10
+  resolution: "process@npm:0.11.10"
+  checksum: 40c3ce4b7e6d4b8c3355479df77aeed46f81b279818ccdc500124e6a5ab882c0cc81ff7ea16384873a95a74c4570b01b120f287abbdd4c877931460eca6084b3
   languageName: node
   linkType: hard
 
@@ -4127,18 +4141,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldraw-yjs-example@workspace:.":
+"tldraw-graph@workspace:.":
   version: 0.0.0-use.local
-  resolution: "tldraw-yjs-example@workspace:."
+  resolution: "tldraw-graph@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.4.1"
-    "@orion/tldraw-collections": "file:./tldraw-collections"
     "@tldraw/tldraw": "npm:2.0.0-beta.2"
     "@types/react": "npm:^18.2.15"
     "@types/react-dom": "npm:^18.2.7"
     "@vitejs/plugin-react": "npm:^4.0.3"
     concurrently: "npm:^8.2.0"
     partykit: "npm:^0.0.27"
+    path: "npm:^0.12.7"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     typescript: "npm:^5.0.2"
@@ -4272,6 +4286,15 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
+  languageName: node
+  linkType: hard
+
+"util@npm:^0.10.3":
+  version: 0.10.4
+  resolution: "util@npm:0.10.4"
+  dependencies:
+    inherits: "npm:2.0.3"
+  checksum: d29f6893e406b63b088ce9924da03201df89b31490d4d011f1c07a386ea4b3dbe907464c274023c237da470258e1805d806c7e4009a5974cd6b1d474b675852a
   languageName: node
   linkType: hard
 

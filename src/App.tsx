@@ -1,9 +1,9 @@
 import { Editor, Tldraw, track, useEditor } from "@tldraw/tldraw";
 import "@tldraw/tldraw/tldraw.css";
-import { GraphUi } from "./graph/GraphControls";
+import { GraphUi } from "./graph/GraphUi";
 import { useYjsStore } from "./useYjsStore";
 import { uiOverrides } from "./graph/uiOverrides";
-import { Collection, CollectionProvider } from "../tldraw-collections/src/CollectionProvider";
+import { Collection, CollectionProvider } from "@tldraw-collections";
 import { useState } from "react";
 import { GraphLayoutCollection } from "./graph/GraphLayoutCollection";
 
@@ -22,6 +22,8 @@ const store = () => {
 }
 
 export default function Canvas() {
+	const [editor, setEditor] = useState<Editor | null>(null)
+
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
@@ -30,10 +32,13 @@ export default function Canvas() {
 				shareZone={<NameEditor />}
 				overrides={uiOverrides}
 				persistenceKey="tldraw-graph"
+				onMount={setEditor}
 			>
-				<CollectionProvider collections={collections}>
-					<GraphUi />
-				</CollectionProvider>
+				{editor && (
+					<CollectionProvider editor={editor} collections={collections}>
+						<GraphUi />
+					</CollectionProvider>
+				)}
 			</Tldraw>
 		</div>
 	);
@@ -41,7 +46,6 @@ export default function Canvas() {
 
 const NameEditor = track(() => {
 	const editor = useEditor();
-
 	const { color, name } = editor.user.getUserPreferences();
 
 	return (

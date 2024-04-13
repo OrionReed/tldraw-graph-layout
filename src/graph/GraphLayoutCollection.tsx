@@ -1,5 +1,5 @@
 import { Layout } from 'webcola';
-import { BaseCollection } from '../../tldraw-collections/src/BaseCollection';
+import { BaseCollection } from '@tldraw-collections';
 import { Editor, TLArrowShape, TLGeoShape, TLShape, TLShapeId } from '@tldraw/tldraw';
 
 type ColaNode = {
@@ -29,7 +29,7 @@ type AlignmentConstraint = {
 type ColaConstraint = AlignmentConstraint
 
 export class GraphLayoutCollection extends BaseCollection {
-  override id = 'graphLayout';
+  override id = 'graph';
   graphSim: Layout;
   animFrame = -1;
   colaNodes: Map<TLShapeId, ColaNode> = new Map();
@@ -47,8 +47,6 @@ export class GraphLayoutCollection extends BaseCollection {
   }
 
   override onAdd(shapes: TLShape[]) {
-    console.log('adding');
-
     for (const shape of shapes) {
       if (shape.type === "arrow")
         this.addArrow(shape as TLArrowShape);
@@ -181,11 +179,11 @@ export class GraphLayoutCollection extends BaseCollection {
       .nodes(nodes)
       // @ts-ignore
       .links(links)
-      .avoidOverlaps(true)
-      // you could use .linkDistance(250) too, which is stable but does not handle size
-      .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
-      .handleDisconnected(true)
       .constraints(constraints)
+      // you could use .linkDistance(250) too, which is stable but does not handle size/rotation
+      .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
+      .avoidOverlaps(true)
+      .handleDisconnected(true)
   }
 
   refreshConstraints() {

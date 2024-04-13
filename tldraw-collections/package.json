@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --watch",
     "prepublish": "yarn build"
   },
   "peerDependencies": {
