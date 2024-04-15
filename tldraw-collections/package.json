@@ -1,0 +1,22 @@
+{
+  "name": "@orion/tldraw-collections",
+  "version": "0.1.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepublish": "yarn build"
+  },
+  "peerDependencies": {
+    "@tldraw/tldraw": "2.0.0-beta.2",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "typescript": "^5.0.2"
+  }
+}
