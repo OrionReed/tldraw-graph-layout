@@ -1,48 +1,43 @@
 import { useEditor } from "@tldraw/tldraw";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../css/dev-ui.css";
-import { useCollection } from "@tldraw-collections";
+import { useCollection } from "@collections";
 
 export const GraphUi = () => {
 	const editor = useEditor();
-	const graphCollection = useCollection('graph')
-	const [size, setSize] = useState(0)
-
-	const updateSize = () => {
-		setSize(graphCollection.getShapes().size)
-	}
+	const { collection, size } = useCollection('graph')
 
 	const handleAdd = () => {
-		if (graphCollection) {
-			graphCollection.add(editor.getSelectedShapes())
+		if (collection) {
+			collection.add(editor.getSelectedShapes())
 			editor.selectNone()
-			updateSize()
 		}
 	}
 
 	const handleRemove = () => {
-		if (graphCollection) {
-			graphCollection.remove(editor.getSelectedShapes())
+		if (collection) {
+			collection.remove(editor.getSelectedShapes())
 			editor.selectNone()
-			updateSize()
 		}
 	}
 
 	const handleShortcut = () => {
-		if (!graphCollection) return
-		const empty = graphCollection.getShapes().size === 0
+		if (!collection) return
+		const empty = collection.getShapes().size === 0
 		if (empty)
-			graphCollection.add(editor.getCurrentPageShapes())
+			collection.add(editor.getCurrentPageShapes())
 		else
-			graphCollection.clear()
-		updateSize()
+			collection.clear()
 	};
 
 	const handleHighlight = () => {
-		if (graphCollection) {
-			editor.setHintingShapes([...graphCollection.getShapes().values()])
-			updateSize()
+		if (collection) {
+			editor.setHintingShapes([...collection.getShapes().values()])
 		}
+	}
+
+	const handleHelp = () => {
+		alert("Use the 'Add' and 'Remove' buttons to add/remove selected shapes, or hit 'G' to add/remove all shapes. \n\nUse the highlight button (🔦) to visualize shapes in the simulation. \n\nBLUE shapes are constrained horizontally, RED shapes are constrained vertically. This is just to demo basic constraints, I plan to demo more interesting constraints in the future. \n\nFor more details, check the project's README.");
 	}
 
 	useEffect(() => {
@@ -80,6 +75,14 @@ export const GraphUi = () => {
 					onClick={handleHighlight}
 				>
 					🔦
+				</button>
+				<button
+					type="button"
+					title="Show Help"
+					className="custom-button"
+					onClick={handleHelp}
+				>
+					⁉️
 				</button>
 			</div>
 		</div>

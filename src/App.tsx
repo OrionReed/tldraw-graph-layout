@@ -3,7 +3,7 @@ import "@tldraw/tldraw/tldraw.css";
 import { GraphUi } from "./graph/GraphUi";
 import { useYjsStore } from "./useYjsStore";
 import { uiOverrides } from "./graph/uiOverrides";
-import { Collection, CollectionProvider } from "@tldraw-collections";
+import { Collection, CollectionProvider } from "@collections";
 import { useState } from "react";
 import { GraphLayoutCollection } from "./graph/GraphLayoutCollection";
 

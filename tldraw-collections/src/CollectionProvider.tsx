@@ -50,20 +50,20 @@ const CollectionProvider: React.FC<CollectionProviderProps> = ({ editor, collect
 
   // Subscribe to shape changes in the editor
   useEffect(() => {
-    if (editor && collections) { // Ensure collections is checked
+
+    if (editor && collections) {
       editor.store.onAfterChange = (prev: TLRecord, next: TLRecord) => {
+        if (next.typeName !== 'shape') return;
         const prevShape = prev as TLShape;
         const nextShape = next as TLShape;
-        if (prevShape.props !== nextShape.props) {
-          handleShapeChange(prevShape, nextShape);
-        }
+        handleShapeChange(prevShape, nextShape);
       };
     }
   }, [editor, collections]);
 
   // Subscribe to shape deletions in the editor
   useEffect(() => {
-    if (editor && collections) { // Ensure collections is checked
+    if (editor && collections) {
       editor.store.onAfterDelete = (prev: TLRecord, _: string) => {
         if (prev.typeName === 'shape')
           handleShapeDelete(prev);

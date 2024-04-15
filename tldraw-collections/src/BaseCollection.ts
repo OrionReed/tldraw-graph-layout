@@ -10,6 +10,8 @@ export abstract class BaseCollection {
   protected shapes: Map<TLShapeId, TLShape> = new Map();
   /** A reference to the \@tldraw Editor instance. */
   protected editor: Editor;
+  /** A set of listeners to be notified when the collection changes. */
+  private listeners = new Set<() => void>();
 
   // TODO: Maybe pass callback to replace updateShape so only CollectionProvider can call it
   public constructor(editor: Editor) {
@@ -27,11 +29,6 @@ export abstract class BaseCollection {
    * @param shapes The shapes being removed from the collection.
    */
   protected onRemove(_shapes: TLShape[]) { }
-
-  /**
-   * Called when the collection is cleared.
-   */
-  protected onClear() { }
 
   /**
    * Called when the membership of the collection changes (i.e., when shapes are added or removed).
@@ -56,6 +53,7 @@ export abstract class BaseCollection {
     });
     this.onAdd(shapes);
     this.onMembershipChange();
+    this.notifyListeners();
   }
 
   /**
@@ -68,15 +66,14 @@ export abstract class BaseCollection {
     });
     this.onRemove(shapes);
     this.onMembershipChange();
+    this.notifyListeners();
   }
 
   /**
    * Clears all shapes from the collection.
    */
   public clear() {
-    this.shapes.clear()
-    this.onClear()
-    this.onMembershipChange()
+    this.remove([...this.shapes.values()])
   }
 
   /**
@@ -94,5 +91,17 @@ export abstract class BaseCollection {
   public _onShapeChange(prev: TLShape, next: TLShape) {
     this.shapes.set(next.id, next)
     this.onShapeChange(prev, next)
+    this.notifyListeners();
+  }
+
+  private notifyListeners() {
+    for (const listener of this.listeners) {
+      listener();
+    }
+  }
+
+  public subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
   }
 }

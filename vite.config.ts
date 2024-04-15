@@ -14,7 +14,7 @@ export default defineConfig({
   resolve: { // Add this resolve configuration
     alias: {
       '@': path.resolve(currentDir, './src'),
-      '@tldraw-collections': path.resolve(currentDir, './tldraw-collections/src'),
+      '@collections': path.resolve(currentDir, './tldraw-collections/src'),
     },
   },
 })

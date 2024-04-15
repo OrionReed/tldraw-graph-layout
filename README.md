@@ -1,15 +1,14 @@
 # tldraw graph layout
-This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/), JS port of [libcola](http://www.adaptagrams.org). This repo is aimed to be a starting point for further exploration and there's lots to be explored! I would also love PRs if you have core improvements which everyone can benefit from.
+This repo demonstrates an interactive force-directed graph layout integration with [tldraw](https://github.com/tldraw/tldraw). It uses [WebCola](https://ialab.it.monash.edu/webcola/), a JS port of [libcola](http://www.adaptagrams.org). This repo is aimed to be a starting point for further exploration and there's lots to be explored!
 
 You can mess around with it online [here](https://orionreed.github.io/tldraw-graph-layout/)
 
 https://github.com/OrionReed/tldraw-graph-layout/assets/16704290/0245917d-3a4b-45ad-a3a5-4c6fc4e46a04
 
 ## Usage
-1. Select shapes you wish to include in the physics simulation
-2. Click the "Graph" button (or hit "G")
-3. Move shapes around and watch it go brrrrrrrrrr
-4. Click "Graph" again to stop the simulation
+1. Hit "G" to add/remove all shapes from the graph collection or select shapes and use the "Add" and "Remove" buttons to add just those
+2. Move shapes around and watch it go brrrrrrrrrr
+3. You can hit the "🔦" button to highlight shapes in the graph
 
 ### Behaviour
 - Any shapes connected with arrows are included in the graph layout (this extends to videos, frames, and all other shapes)

@@ -1,5 +1,5 @@
 import { Layout } from 'webcola';
-import { BaseCollection } from '@tldraw-collections';
+import { BaseCollection } from '@collections';
 import { Editor, TLArrowShape, TLGeoShape, TLShape, TLShapeId } from '@tldraw/tldraw';
 
 type ColaNode = {
@@ -33,7 +33,7 @@ export class GraphLayoutCollection extends BaseCollection {
   graphSim: Layout;
   animFrame = -1;
   colaNodes: Map<TLShapeId, ColaNode> = new Map();
-  colaLinks: Map<string, ColaIdLink> = new Map();
+  colaLinks: Map<TLShapeId, ColaIdLink> = new Map();
   colaConstraints: ColaConstraint[] = [];
 
   constructor(editor: Editor) {
@@ -48,10 +48,11 @@ export class GraphLayoutCollection extends BaseCollection {
 
   override onAdd(shapes: TLShape[]) {
     for (const shape of shapes) {
-      if (shape.type === "arrow")
-        this.addArrow(shape as TLArrowShape);
-      else {
+      if (shape.type !== "arrow") {
         this.addGeo(shape);
+      }
+      else {
+        this.addArrow(shape as TLArrowShape);
       }
     }
     this.refreshGraph();
@@ -62,6 +63,7 @@ export class GraphLayoutCollection extends BaseCollection {
 
     for (const shape of shapes) {
       this.colaNodes.delete(shape.id);
+      this.colaLinks.delete(shape.id);
     }
 
     // Filter out links where either source or target has been removed
@@ -126,12 +128,11 @@ export class GraphLayoutCollection extends BaseCollection {
     const source = arrow.props.start.type === 'binding' ? this.editor.getShape(arrow.props.start.boundShapeId) : undefined;
     const target = arrow.props.end.type === 'binding' ? this.editor.getShape(arrow.props.end.boundShapeId) : undefined;
     if (source && target) {
-      const key = `${source.id}->${target.id}`;
       const link: ColaIdLink = {
         source: source.id,
         target: target.id
       };
-      this.colaLinks.set(key, link);
+      this.colaLinks.set(arrow.id, link);
     }
   }
 
