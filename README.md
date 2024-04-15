@@ -11,12 +11,12 @@ https://github.com/OrionReed/tldraw-graph-layout/assets/16704290/0245917d-3a4b-4
 3. You can hit the "🔦" button to highlight shapes in the graph
 
 ### Behaviour
-- Any shapes connected with arrows are included in the graph layout (this extends to videos, frames, and all other shapes)
-- When you select a shape, it will be "fixed" so you can move it around. Deselect to unfreeze.
+- *Any* shapes connected with arrows are included in the graph layout (this includes videos, frames, etc)
+- While a shape is selected it will not be moved by the graph layout. Deselect to let those shapes move.
 
 ### Constraints
-- Making a shape red will fix it in place
-- Light blue arrows create an alignment constraint between two shapes
+- Making a shape red will constrain it vertically
+- Making a shape blue will constrain it horizontally
 - Much more interesting constraints are possible, PRs welcome!
 
 ## Setup
@@ -34,11 +34,10 @@ yarn deploy
 
 # Contributing
 Please open an issue or PR if you have any suggestions or improvements! Especially looking for:
-- Architecture / performance improvements / bug fixes
 - More interesting constraint demonstrations
-- Approaches to proper multiplayer support
+- Improvements to the [collections system](https://github.com/OrionReed/tldraw-graph-layout/tree/main/tldraw-collections)
+- Bug fixes / performance improvements
 
-## Current Limitations
-- Rotation is not considered in the layout (PRs welcome!)
-- Performance is **much** poorer than it needs to be, we're currently restarting the layout sim every frame (I know, I know...) and PRs to fix this or otherwise speed things up are very welcome!
-- Due to the current edge length calculation, it's possible for the graph to never reach a stable / zero energy state
+## Current Limitations & Issues
+- There is a bug I cannot identify where the non-overlap constraint does not apply to disconnected nodes. They *should* collide with each other but don't.
+- Due to the current edge length calculation, it's possible for the graph to never reach a stable / zero energy state under some circumstances. This is just me doing bad math. A better ideal edge length function would be nice.
